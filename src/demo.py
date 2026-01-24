@@ -1,4 +1,4 @@
-from gale_shapley import stable_matching
+from gale_shapley import stableMatch
 
 def printInput(resPref, hosPref, capacity):
     print("======== Inputs ========")
