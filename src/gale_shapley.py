@@ -1,14 +1,32 @@
-from typing import Dict, List, Optional, Set, Tuple, Any
+from typing import Dict, List, Optional, Set, Tuple, Any, Literal
 import time
 
-def stableMatch( resPref: Dict[str, List[str]], hosPref: Dict[str, List[str]],
-    capacity: Dict[str, int], returnEvents: bool=False,) -> Tuple[Any, ...]:
+UnrankedPolicy = Literal["reject", "worst"]
+
+def buildRank(hosPref: Dict[str, List[str]]) -> Dict[str, Dict[str, int]]:
+    return {h: {r: i for i, r in enumerate(prefs)} for h, prefs in hosPref.items()}
+
+def worstHeld(h: str, held: List[str], rank: Dict[str, Dict[str, int]]) -> str:
+    worst = held[0]
+    worstRank = rank.get(h, {}).get(worst, 10**9)
+    for r in held[1:]:
+        rRank = rank.get(h, {}).get(r, 10**9)
+        if rRank > worstRank:
+            worst, worstRank = r, rRank
+    return worst
+
+def stableMatch( 
+        resPref: Dict[str, List[str]], hosPref: Dict[str, List[str]], 
+        capacity: Dict[str, int], returnEvents: bool=False, 
+        unrankedPolicy: UnrankedPolicy = "worst") -> Tuple[Any, ...]:
 
     start = time.perf_counter()
-    events: List[Tuple[Any, ...]] = []
+    rank = buildRank(hosPref)
+    events: List[str] = []
 
-    def log(line1: str) -> None:
-        events.append((line1))
+    def log(line: str) -> None:
+        if returnEvents:
+            events.append((line))
 
     # Initialize state
     resident = list(resPref.keys())
@@ -21,15 +39,17 @@ def stableMatch( resPref: Dict[str, List[str]], hosPref: Dict[str, List[str]],
     free: List[str] = [r for r in resident if len(resPref.get(r, [])) > 0]
     log(f"START: {free[:]}")
 
-    def hosRank(h: str, r: str) -> int:
-        try:
-            return hosPref[h].index(r)
-        except ValueError:
-            return 10**9 # if not ranked, treat it as worst
+    def acceptable(h: str, r: str) -> bool:
+        if unrankedPolicy == "reject":
+            return r in rank.get(h, {})
+        return True
 
     while free:
         r = free.pop(0)
         log(f"Resident Selected: {r}, Queue: {free[:]}")
+
+        if resMatch[r] is not None:
+            continue
 
         prefs = resPref.get(r, [])
         if nextChoice[r] >= len(prefs):
@@ -42,7 +62,7 @@ def stableMatch( resPref: Dict[str, List[str]], hosPref: Dict[str, List[str]],
         nextChoice[r] += 1
 
         # Reject if invalid hospital or no capacity
-        if h not in capacity or capacity[h] <= 0:
+        if h not in capacity or capacity[h] <= 0 or h not in hosHeld:
             log(f"Reject: {r}, No Capacity or Invalid: {h}")
             if nextChoice[r] < len(prefs):
                 free.append(r)
@@ -51,20 +71,21 @@ def stableMatch( resPref: Dict[str, List[str]], hosPref: Dict[str, List[str]],
                 log(f"Exhausted After Reject: {r}")
             continue
 
+        if not acceptable(h, r):
+            log(f"Reject Unranked: {r} -> {h}")
+            if nextChoice[r] < len(prefs):
+                free.append(r)
+                log(f"Requeue Unranked: {r}, Next Choice Index: {nextChoice[r]}")
+            else:
+                log(f"Exhausted After Unranked Reject: {r}")
+            continue
+
         hosHeld[h].append(r)
         resMatch[r] = h
         log(f"{h}'s Hold List: {hosHeld[h][:]}")
 
         if len(hosHeld[h]) > capacity[h]:
-            worst = hosHeld[h][0]
-            worstRank = hosRank(h, worst)
-
-            for r in hosHeld[h][1:]:
-                rRank = hosRank(h,r)
-                if rRank > worstRank:
-                    worst = r
-                    worstRank = rRank
-            
+            worst = worstHeld(h, hosHeld[h], rank)
             hosHeld[h].remove(worst)
             resMatch[worst] = None
             log(f"Reject: {worst} -> {h}, {h}'s Hold List: {hosHeld[h][:]}")
