@@ -101,7 +101,7 @@ def stableMatch(
         return resMatch, hosMatch, events, elapsed
     return resMatch, hosMatch
 
-def statistics(
+def metrics(
         resPref: Dict[str, List[str]], 
         hosPref: Dict[str, List[str]],
         capacity: Dict[str, int], 
@@ -115,4 +115,25 @@ def statistics(
     unmatched = sum(1 for r in resMatch if resMatch[r] is None)
     unmatchedRate = unmatched / total if total > 0 else 0.0
 
-    return { "Unmatched Rate": unmatchedRate }
+    # Average Resident's Preference Rank
+    resRanks: List[int] = []
+    for r, h in resMatch.items():
+        if h is None: 
+            continue
+        prefs = resPref.get(r, [])
+        if h in prefs:
+            resRanks.append(prefs.index(h) + 1)
+    avgResRank = (sum(resRanks) / len(resRanks)) if resRanks else 0.0
+
+    # Average Hospital's Preference Rank
+    hosRanks: List[int] = []
+    for h, rs in hosMatch.items():
+        for r in rs:
+            if r in rank.get(h, {}):
+                hosRanks.append(rank[h][r] + 1)
+            else:
+                pass
+    avgHosRank = (sum(hosRanks) / len(hosRanks)) if hosRanks else 0.0
+
+    return { "Unmatched Rate": unmatchedRate, "Average Resident's Preference Rank": avgResRank,
+            "Average Hospital's Preference Rank": avgHosRank }
