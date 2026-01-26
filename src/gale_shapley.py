@@ -1,4 +1,5 @@
-from typing import Dict, List, Optional, Set, Tuple, Any, Literal
+from collections import deque
+from typing import Dict, List, Optional, Set, Tuple, Any, Literal, Deque
 import time
 
 UnrankedPolicy = Literal["reject", "worst"]
@@ -26,7 +27,7 @@ def stableMatch(
 
     def log(line: str) -> None:
         if returnEvents:
-            events.append((line))
+            events.append(line)
 
     # Initialize state
     resident = list(resPref.keys())
@@ -36,8 +37,8 @@ def stableMatch(
     resMatch: Dict[str, Optional[str]] = {r: None for r in resident}
     hosHeld: Dict[str, List[str]] = {h: [] for h in hospital}
 
-    free: List[str] = [r for r in resident if len(resPref.get(r, [])) > 0]
-    log(f"START: {free[:]}")
+    free: Deque[str] = deque([r for r in resident if len(resPref.get(r, [])) > 0])
+    log(f"START: {free}")
 
     def acceptable(h: str, r: str) -> bool:
         if unrankedPolicy == "reject":
@@ -45,8 +46,8 @@ def stableMatch(
         return True
 
     while free:
-        r = free.pop(0)
-        log(f"Resident Selected: {r}, Queue: {free[:]}")
+        r = free.popleft()
+        log(f"Resident Selected: {r}, Queue: {list(free)}")
 
         if resMatch[r] is not None:
             continue
@@ -97,10 +98,10 @@ def stableMatch(
             else:
                 log(f"Exhausted Kicked: {worst}")
 
-        hosMatch: Dict[str, Set[str]] = {h: set(rs) for h, rs in hosHeld.items()}
+    hosMatch: Dict[str, Set[str]] = {h: set(rs) for h, rs in hosHeld.items()}
 
     elapsed = (time.perf_counter() - start) * 1000
-    log(f"FINISH, Elapsed Seconds: {elapsed:.2f} ms")
+    log(f"FINISH, Elapsed: {elapsed:.2f} ms")
 
     if returnEvents:
         return resMatch, hosMatch, events, elapsed
