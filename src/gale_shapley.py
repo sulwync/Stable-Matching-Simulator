@@ -37,7 +37,7 @@ def stableMatch(
     hosHeld: Dict[str, List[str]] = {h: [] for h in hospital}
 
     free: Deque[str] = deque([r for r in resident if len(resPref.get(r, [])) > 0])
-    log(f"START: {free}")
+    log(f"START: {list(free)}")
 
     while free:
         r = free.popleft()

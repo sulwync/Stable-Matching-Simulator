@@ -11,52 +11,54 @@ def printInput(resPref, hosPref, capacity):
         print(f" {h}: {pref}")
     print("\nHospital Capacities:", capacity)
 
-def printOutput(resMatch, hosMatch, resPref, hosPref, capacity):
+def printOutput(resMatch, hosMatch, resPref, hosPref, capacity, events):
     print("\n======== Output ========")
     print("Resident -> Hospital:")
-    for r in sorted(resMatch.keys()):
+    def resKey(r: str) -> int:
+        return int(r[1:])
+    
+    for r in sorted(resMatch.keys(), key=resKey):
         print(f" {r}: {resMatch[r]}")
 
     print("\nHospital -> Residents:")
-    for h in sorted(hosMatch.keys()):
+    for h in sorted(hosMatch.keys(), key=resKey):
         print(f" {h}: {sorted(list(hosMatch[h]))}")
 
-    m = metrics(resPref, hosPref, capacity, resMatch, hosMatch)
+    m = metrics(resPref, hosPref, capacity, resMatch, hosMatch, events)
 
     print("\n======== Metrics ========")
+    print(f"Total proposals: {m['Total Proposals']}")
     print(f"Unmatched rate: {m['Unmatched Rate']*100:.1f}%")
     print(f"Average Resident's Preference Rank: {m['Average Resident\'s Preference Rank']:.2f}")
     print(f"Average Hospital's Preference Rank: {m['Average Hospital\'s Preference Rank']:.2f}")
-    print(f"({len(m['Blocking Pairs'])}) Blocking pairs: {m['Blocking Pairs']}")
+    print(f"{len(m['Blocking Pairs'])} Blocking pairs: {m['Blocking Pairs']}")
+    print(f"First choice rate: {m['First Choice Rate']*100:.1f}% "
+      f"({m['First Choice Count']} residents)")
+
+
 
 def main():
     # Resident Preferences
     resPref = {
-    "R1":  ["H1", "H2", "H3"],
-    "R2":  ["H1", "H3"],
-    "R3":  ["H2", "H1", "H4"],
-    "R4":  ["H2"],                 # single choice
-    "R5":  ["H3", "H1"],
-    "R6":  ["H1", "H2", "H5"],     # H5 has 0 capacity
-    "R7":  ["H4", "H2", "H3"],
-    "R8":  ["H3", "H2"],
-    "R9":  ["H2", "H4"],
-    "R10": ["H1", "H4"],
-    "R11": ["H99", "H1"],          # unknown hospital first -> should get rejected then try H1
-    "R12": [],                     # no preferences (edge case)
+        "R1": ["H1", "H2"],
+        "R2": ["H2"],
+        "R3": ["H2", "H3"],
+        "R4": ["H3"],
+        "R5": ["H1"],
+        "R6": [],
     }
+
 
     # Hospital Preferences
     hosPref = {
-    "H1": ["R10", "R2", "R1", "R6", "R5", "R11"],
-    "H2": ["R3", "R9", "R4", "R1", "R8"],
-    "H3": ["R5", "R8", "R7", "R1", "R2"],
-    "H4": ["R7", "R9", "R10", "R3"],
-    "H5": ["R6", "R1", "R3", "R2"],
+        "H1": ["R5", "R1"],
+        "H2": ["R1", "R3", "R2"],
+        "H3": ["R2", "R4"],
     }
 
+
     # Hospital Capacities
-    capacity = { "H1": 2, "H2": 2, "H3": 1, "H4": 1, "H5": 0 }
+    capacity = { "H1": 1, "H2": 2, "H3": 1 }
 
     printInput(resPref, hosPref, capacity)
 
@@ -68,7 +70,7 @@ def main():
     for e in events:
         print(e)
 
-    printOutput(resMatch, hosMatch, resPref, hosPref, capacity)
+    printOutput(resMatch, hosMatch, resPref, hosPref, capacity, events)
 
 
 if __name__ == "__main__":

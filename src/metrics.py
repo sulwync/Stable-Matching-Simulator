@@ -6,9 +6,15 @@ def metrics(
         hosPref: Dict[str, List[str]],
         capacity: Dict[str, int], 
         resMatch: Dict[str, Optional[str]], 
-        hosMatch: Dict[str, Set[str]],) -> Dict[str, Any]:
+        hosMatch: Dict[str, Set[str]],
+        events: Optional[List[str]] = None) -> Dict[str, Any]:
 
     rank = buildRank(hosPref)
+
+    # Total proposals made
+    totalProposals = 0
+    if events is not None:
+        totalProposals = sum(1 for e in events if e.startswith("Proposal:"))
 
     # Unmatched Rate
     total = len(resMatch)
@@ -74,8 +80,22 @@ def metrics(
             if resPrefers(r, h) and hosPrefers(r, h):
                 blockingPairs.append((r, h))
 
+    # First choice rate (residents)
+    matchedResidents = [r for r, h in resMatch.items() if h is not None]
+    firstChoiceCount = 0
+    for r in matchedResidents:
+        h = resMatch[r]
+        prefs = resPref.get(r, [])
+        if prefs and h == prefs[0]:
+            firstChoiceCount += 1
+
+    firstChoiceRate = (firstChoiceCount / len(matchedResidents)) if matchedResidents else 0.0
+
 
     return { "Unmatched Rate": unmatchedRate, 
             "Average Resident's Preference Rank": avgResRank,
             "Average Hospital's Preference Rank": avgHosRank, 
-            "Blocking Pairs": blockingPairs}
+            "Blocking Pairs": blockingPairs,
+            "First Choice Rate": firstChoiceRate,
+            "First Choice Count": firstChoiceCount,
+            "Total Proposals": totalProposals,}
