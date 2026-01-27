@@ -1,5 +1,5 @@
 from collections import deque
-from typing import Dict, List, Optional, Set, Tuple, Any, Literal, Deque
+from typing import Dict, List, Optional, Set, Tuple, Any, Deque
 import time
 
 def buildRank(hosPref: Dict[str, List[str]]) -> Dict[str, Dict[str, int]]:
@@ -100,40 +100,3 @@ def stableMatch(
     if returnEvents:
         return resMatch, hosMatch, events, elapsed
     return resMatch, hosMatch
-
-def metrics(
-        resPref: Dict[str, List[str]], 
-        hosPref: Dict[str, List[str]],
-        capacity: Dict[str, int], 
-        resMatch: Dict[str, Optional[str]], 
-        hosMatch: Dict[str, Set[str]],) -> Dict[str, Any]:
-
-    rank = buildRank(hosPref)
-
-    # Unmatched Rate
-    total = len(resMatch)
-    unmatched = sum(1 for r in resMatch if resMatch[r] is None)
-    unmatchedRate = unmatched / total if total > 0 else 0.0
-
-    # Average Resident's Preference Rank
-    resRanks: List[int] = []
-    for r, h in resMatch.items():
-        if h is None: 
-            continue
-        prefs = resPref.get(r, [])
-        if h in prefs:
-            resRanks.append(prefs.index(h) + 1)
-    avgResRank = (sum(resRanks) / len(resRanks)) if resRanks else 0.0
-
-    # Average Hospital's Preference Rank
-    hosRanks: List[int] = []
-    for h, rs in hosMatch.items():
-        for r in rs:
-            if r in rank.get(h, {}):
-                hosRanks.append(rank[h][r] + 1)
-            else:
-                pass
-    avgHosRank = (sum(hosRanks) / len(hosRanks)) if hosRanks else 0.0
-
-    return { "Unmatched Rate": unmatchedRate, "Average Resident's Preference Rank": avgResRank,
-            "Average Hospital's Preference Rank": avgHosRank }

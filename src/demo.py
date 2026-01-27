@@ -1,4 +1,5 @@
-from gale_shapley import stableMatch, metrics
+from gale_shapley import stableMatch
+from metrics import metrics
 
 def printInput(resPref, hosPref, capacity):
     print("======== Inputs ========")
@@ -26,6 +27,7 @@ def printOutput(resMatch, hosMatch, resPref, hosPref, capacity):
     print(f"Unmatched rate: {m['Unmatched Rate']*100:.1f}%")
     print(f"Average Resident's Preference Rank: {m['Average Resident\'s Preference Rank']:.2f}")
     print(f"Average Hospital's Preference Rank: {m['Average Hospital\'s Preference Rank']:.2f}")
+    print(f"({len(m['Blocking Pairs'])}) Blocking pairs: {m['Blocking Pairs']}")
 
 def main():
     # Resident Preferences
