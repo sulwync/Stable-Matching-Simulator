@@ -100,3 +100,43 @@ def stableMatch(
     if returnEvents:
         return resMatch, hosMatch, events, elapsed
     return resMatch, hosMatch
+
+# Auto Mode
+# Build hospital preference lists based on constraints
+def generateHosPref(
+    resInfo: Dict[str, Dict[str, Any]],
+    hosCriteria: Dict[str, Dict[str, Any]],) -> Dict[str, List[str]]:
+
+    allResidents = list(resInfo.keys())
+    hosPref: Dict[str, List[str]] = {}
+
+    for h, crit in hosCriteria.items():
+        prefDeg = crit.get("prefDeg", [])
+
+        def degreeMatch(r: str) -> int:
+            deg = resInfo.get(r, {}).get("degree", None)
+            return 1 if deg in prefDeg else 0
+
+        def gpaVal(r: str) -> float:
+            g = resInfo.get(r, {}).get("gpa", 0.0)
+            try:
+                return float(g)
+            except Exception:
+                return 0.0
+
+        candidates = allResidents
+        candidates = [r for r in allResidents if degreeMatch(r) == 1]
+
+        # Sort by: degree match (1 first), GPA (high first)
+        candidatesSorted = sorted(
+            candidates,
+            key=lambda r: (-degreeMatch(r), -gpaVal(r), r)
+        )
+
+        hosPref[h] = candidatesSorted
+
+    return hosPref
+
+def stableMatchWithConst(resPref, resInfo, hosCriteria, capacity, returnEvents=False):
+    hosPref = generateHosPref(resInfo, hosCriteria)
+    return stableMatch(resPref, hosPref, capacity, returnEvents=returnEvents)

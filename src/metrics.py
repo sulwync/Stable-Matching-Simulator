@@ -21,6 +21,36 @@ def metrics(
     unmatched = sum(1 for r in resMatch if resMatch[r] is None)
     unmatchedRate = unmatched / total if total > 0 else 0.0
 
+    # Max proposals by a single resident (unluckiest resident)
+    proposalsByRes: Dict[str, int] = {r: 0 for r in resPref.keys()}
+    unluckiestCount = 0
+
+    if events is not None:
+        for e in events:
+            if e.startswith("Proposal:"):
+                parts = e.split()
+                if len(parts) >= 2:
+                    r = parts[1]
+                    proposalsByRes[r] = proposalsByRes.get(r, 0) + 1
+
+        for r, k in proposalsByRes.items():
+            if k > unluckiestCount:
+                unluckiestCount = k
+                unluckiestRes = r
+        
+        maxCount = 0
+        for r in proposalsByRes:
+            if proposalsByRes[r] > maxCount:
+                maxCount = proposalsByRes[r]
+
+        unluckiestRes = []
+        for r in proposalsByRes:
+            if proposalsByRes[r] == maxCount and maxCount > 0:
+                unluckiestRes.append(r)
+
+        unluckiestRes.sort()
+
+
     # Average Resident's Preference Rank
     resRanks: List[int] = []
     for r, h in resMatch.items():
@@ -91,11 +121,11 @@ def metrics(
 
     firstChoiceRate = (firstChoiceCount / len(matchedResidents)) if matchedResidents else 0.0
 
-
     return { "Unmatched Rate": unmatchedRate, 
             "Average Resident's Preference Rank": avgResRank,
             "Average Hospital's Preference Rank": avgHosRank, 
             "Blocking Pairs": blockingPairs,
             "First Choice Rate": firstChoiceRate,
             "First Choice Count": firstChoiceCount,
-            "Total Proposals": totalProposals,}
+            "Total Proposals": totalProposals,
+            "Max Proposals By A Resident": (unluckiestRes, unluckiestCount)}
