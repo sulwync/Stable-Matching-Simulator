@@ -128,4 +128,5 @@ def metrics(
             "First Choice Rate": firstChoiceRate,
             "First Choice Count": firstChoiceCount,
             "Total Proposals": totalProposals,
-            "Max Proposals By A Resident": (unluckiestRes, unluckiestCount)}
+            "Max Proposals By A Resident": (unluckiestRes, unluckiestCount),
+        }

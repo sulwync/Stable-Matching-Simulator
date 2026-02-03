@@ -1,4 +1,5 @@
 from gale_shapley import stableMatch, stableMatchWithConst, generateHosPref
+from explain_unmatched import explainUnmatched
 from metrics import metrics
 
 def printInput(resPref, hosPref, capacity):
@@ -11,7 +12,7 @@ def printInput(resPref, hosPref, capacity):
         print(f" {h}: {pref}")
     print("\nHospital Capacities:", capacity)
 
-def printOutput(resMatch, hosMatch, resPref, hosPref, capacity, events, mode):
+def printOutput(resMatch, hosMatch, resPref, hosPref, capacity, events, mode, resInfo, hosCriteria):
     print("\n======== Output ========")
     print(f"Mode: {mode}")
     print("Resident -> Hospital:")
@@ -37,84 +38,99 @@ def printOutput(resMatch, hosMatch, resPref, hosPref, capacity, events, mode):
       f"({m['First Choice Count']} residents)")
     print(f"{len(m['Blocking Pairs'])} Blocking pairs: {m['Blocking Pairs']}")
 
+    explanations = explainUnmatched(
+        mode=mode,
+        resPref=resPref,
+        resMatch=resMatch,
+        hosMatch=hosMatch,
+        resInfo=resInfo,
+        hosCriteria=hosCriteria,
+        hosPref=hosPref
+    )
+    
+    def printUnmatchedExplanation(explanations):
+        print("\n======== Unmatched Explanation ========")
+        for r, info in explanations:
+            if info.get("mode") == "Auto":
+                print(f"  {r}: degree='{info['degree']}', gpa={info['gpa']:.2f}")
+                if info.get("ineligible"):
+                    print(f"    ineligible (degree mismatch): {info['ineligible']}")
+                if info.get("eligible"):
+                    print(f"    eligible: {info['eligible']}")
+                if info.get("closestMiss"):
+                    print(f"    closest miss: {info['closestMiss']}")
+                if info.get("blocked"):
+                    print(f"    blocked by cutoff at: {info['blocked']}")
+                if info.get("note"):
+                    print(f"    note: {info['note']}")
+            else:
+                print(f"  {r}:")
+                if info.get("unranked"):
+                    print(f"    unranked by: {info['unranked']}")
+                if info.get("ranked"):
+                    print(f"    ranked by: {info['ranked']}")
+                if info.get("closestMiss"):
+                    print(f"    closest miss: {info['closestMiss']}")
+                if info.get("blocked"):
+                    print(f"    blocked at: {info['blocked']}")
+                if info.get("note"):
+                    print(f"    note: {info['note']}")
 
+    printUnmatchedExplanation(explanations)
 
 def main():
+    # Resident Information
     resInfo = {
-        "R1":  {"degree": "UG", "gpa": 3.92},
-        "R2":  {"degree": "PG", "gpa": 3.75},
-        "R3":  {"degree": "UG", "gpa": 3.48},
-        "R4":  {"degree": "PG", "gpa": 3.33},
-        "R5":  {"degree": "UG", "gpa": 3.67},
-        "R6":  {"degree": "PG", "gpa": 3.90},
-        "R7":  {"degree": "UG", "gpa": 3.12},
-        "R8":  {"degree": "PG", "gpa": 3.58},
-        "R9":  {"degree": "UG", "gpa": 3.81},
-        "R10": {"degree": "PG", "gpa": 3.05},
-        "R11": {"degree": "UG", "gpa": 3.27},
-        "R12": {"degree": "PG", "gpa": 3.62},
+        "R1": {"degree": "UG", "gpa": 3.95},
+        "R2": {"degree": "UG", "gpa": 3.55},
+        "R3": {"degree": "UG", "gpa": 2.90},
+        "R4": {"degree": "PG", "gpa": 3.85},
+        "R5": {"degree": "PG", "gpa": 3.40},
     }
 
-    # Resident preferences
+    # Resident Preferences
     resPref = {
-        "R1":  ["H1", "H3", "H2", "H4"],
-        "R2":  ["H2", "H1", "H4", "H3"],
-        "R3":  ["H3", "H2", "H1", "H4"],
-        "R4":  ["H1", "H4", "H2", "H3"],
-        "R5":  ["H2", "H3", "H4", "H1"],
-        "R6":  ["H4", "H1", "H2", "H3"],
-        "R7":  ["H3", "H4", "H1", "H2"],
-        "R8":  ["H1", "H2", "H3", "H4"],
-        "R9":  ["H2", "H4", "H3", "H1"],
-        "R10": ["H4", "H3", "H2", "H1"],
-        "R11": ["H3", "H1", "H4", "H2"],
-        "R12": ["H2", "H1", "H3", "H4"],
+        "R1": ["H1", "H2", "H3"],
+        "R2": ["H2", "H1", "H3"],
+        "R3": ["H2", "H3", "H1"],
+        "R4": ["H3", "H2", "H1"],
+        "R5": ["H3", "H1", "H2"],
     }
 
-    # Manual hospital preferences
+    # Hospital Preferences
     hosPref = {
-        "H1": ["R6", "R1", "R9", "R2", "R12", "R5", "R8", "R3", "R4", "R11", "R7", "R10"],
-        "H2": ["R1", "R2", "R6", "R9", "R12", "R5", "R8", "R3", "R4", "R11", "R7", "R10"],
-        "H3": ["R9", "R5", "R1", "R3", "R12", "R6", "R8", "R2", "R11", "R4", "R7", "R10"],
-        "H4": ["R6", "R12", "R2", "R8", "R1", "R9", "R5", "R3", "R4", "R11", "R7", "R10"],
+        "H1": ["R2", "R1", "R5", "R3", "R4"],
+        "H2": ["R1", "R2", "R4", "R3", "R5"],
+        "H3": ["R4", "R5", "R3", "R2", "R1"],
     }
 
-    # Hospital criteria for constraints-generated preferences
+    # Hospital Capacities
+    capacity = { "H1": 1, "H2": 1, "H3": 1}
+
+    # Hospital Criteria
     hosCriteria = {
         "H1": {"prefDeg": ["PG"]},
         "H2": {"prefDeg": ["UG"]},
         "H3": {"prefDeg": ["UG", "PG"]},
-        "H4": {"prefDeg": ["PG", "UG"]},
-    }
-
-    # Hospital capacities
-    capacity = {
-        "H1": 3,
-        "H2": 3,
-        "H3": 2,
-        "H4": 2,
     }
 
     mode = "Manual" 
-
     if mode == "Manual":
         usedHosPref = hosPref
         printInput(resPref, hosPref, capacity)
-        resMatch, hosMatch, events, elapsed = stableMatch(resPref, hosPref, capacity, True)
+        resMatch, hosMatch, events = stableMatch(resPref, hosPref, capacity, True)
     else:
         usedHosPref = generateHosPref(resInfo, hosCriteria)
         printInput(resPref, usedHosPref, capacity)
-        resMatch, hosMatch, events, elapsed = stableMatchWithConst(
+        resMatch, hosMatch, events = stableMatchWithConst(
             resPref, resInfo, hosCriteria, capacity, returnEvents=True
         )
-
-    print(f"\nTime taken: {elapsed:.2f} seconds")
 
     print("\n======== Log (events) ========")
     for e in events:
         print(e)
 
-    printOutput(resMatch, hosMatch, resPref, usedHosPref, capacity, events, mode)
+    printOutput(resMatch, hosMatch, resPref, usedHosPref, capacity, events, mode, resInfo, hosCriteria)
 
 if __name__ == "__main__":
     main()

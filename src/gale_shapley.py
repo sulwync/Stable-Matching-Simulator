@@ -98,7 +98,7 @@ def stableMatch(
     log(f"FINISH, Elapsed: {elapsed:.2f} ms")
 
     if returnEvents:
-        return resMatch, hosMatch, events, elapsed
+        return resMatch, hosMatch, events
     return resMatch, hosMatch
 
 # Auto Mode
