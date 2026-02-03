@@ -1,6 +1,6 @@
-from gale_shapley import stableMatch, stableMatchWithConst, generateHosPref
-from explain_unmatched import explainUnmatched
-from metrics import metrics
+from core.gale_shapley import stableMatch, stableMatchWithConst, generateHosPref
+from core.explain_unmatched import explainUnmatched
+from core.metrics import metrics
 
 def printInput(resPref, hosPref, capacity):
     print("======== Inputs ========")
