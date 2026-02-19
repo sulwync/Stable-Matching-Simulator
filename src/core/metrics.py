@@ -1,13 +1,18 @@
-from typing import Dict, List, Set, Optional, Any, Tuple
-from gale_shapley import buildRank
+from typing import Optional
+
+from core.types import (
+    ResidentId, HospitalId, ResidentPreferences, HospitalPreferences,
+    CapacityMap, ResidentMatch, HospitalMatch, EventLog, MetricsResult, BlockingPairs)
+
+from core.gale_shapley import buildRank
 
 def metrics(
-        resPref: Dict[str, List[str]], 
-        hosPref: Dict[str, List[str]],
-        capacity: Dict[str, int], 
-        resMatch: Dict[str, Optional[str]], 
-        hosMatch: Dict[str, Set[str]],
-        events: Optional[List[str]] = None) -> Dict[str, Any]:
+    resPref: ResidentPreferences,
+    hosPref: HospitalPreferences,
+    capacity: CapacityMap,
+    resMatch: ResidentMatch,
+    hosMatch: HospitalMatch,
+    events: Optional[EventLog] = None) -> MetricsResult:
 
     rank = buildRank(hosPref)
 
@@ -22,7 +27,7 @@ def metrics(
     unmatchedRate = unmatched / total if total > 0 else 0.0
 
     # Max proposals by a single resident (unluckiest resident)
-    proposalsByRes: Dict[str, int] = {r: 0 for r in resPref.keys()}
+    proposalsByRes: dict[ResidentId, int] = {r: 0 for r in resPref.keys()}
     unluckiestCount = 0
 
     if events is not None:
@@ -52,7 +57,7 @@ def metrics(
 
 
     # Average Resident's Preference Rank
-    resRanks: List[int] = []
+    resRanks: list[int] = []
     for r, h in resMatch.items():
         if h is None: 
             continue
@@ -62,7 +67,7 @@ def metrics(
     avgResRank = (sum(resRanks) / len(resRanks)) if resRanks else 0.0
 
     # Average Hospital's Preference Rank
-    hosRanks: List[int] = []
+    hosRanks: list[int] = []
     for h, rs in hosMatch.items():
         for r in rs:
             if r in rank.get(h, {}):
@@ -83,7 +88,7 @@ def metrics(
         
         return prefs.index(h) < prefs.index(current)
     
-    def hosPrefers(r: str, h: str) -> bool:
+    def hosPrefers(r: ResidentId, h: HospitalId) -> bool:
         if h not in capacity or capacity[h] <= 0:
             return False
         
@@ -102,7 +107,7 @@ def metrics(
                 worstRank = xRank
         return rank[h][r] < worstRank
     
-    blockingPairs: List[Tuple[str, str]] = []
+    blockingPairs: BlockingPairs = []
     for r, prefs in resPref.items():
         for h in prefs:
             if resMatch.get(r) == h:

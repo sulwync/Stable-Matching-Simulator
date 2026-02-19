@@ -1,11 +1,18 @@
-from collections import deque
-from typing import Dict, List, Optional, Set, Tuple, Any, Deque
-import time
+from __future__ import annotations
 
-def buildRank(hosPref: Dict[str, List[str]]) -> Dict[str, Dict[str, int]]:
+from collections import deque
+import time
+from typing import Any, Optional
+
+from core.types import (
+    ResidentId, HospitalId, ResidentPreferences, HospitalPreferences, CapacityMap,
+    RankTable, ResidentMatch, HospitalMatch, HospitalHeld, EventLog, FreeQueue,
+    ResidentsInfoMap, HospitalsCriteriaMap, StableMatchReturn)
+
+def buildRank(hosPref: HospitalPreferences) -> RankTable:
     return {h: {r: i for i, r in enumerate(prefs)} for h, prefs in hosPref.items()}
 
-def worstHeld(h: str, held: List[str], rank: Dict[str, Dict[str, int]]) -> str:
+def worstHeld(h: HospitalId, held: list[ResidentId], rank: RankTable) -> ResidentId:
     worst = held[0]
     worstRank = rank[h][worst]
     for r in held[1:]:
@@ -15,28 +22,28 @@ def worstHeld(h: str, held: List[str], rank: Dict[str, Dict[str, int]]) -> str:
     return worst
 
 def stableMatch( 
-        resPref: Dict[str, List[str]], 
-        hosPref: Dict[str, List[str]], 
-        capacity: Dict[str, int], 
-        returnEvents: bool=False) -> Tuple[Any, ...]:
+        resPref: ResidentPreferences,
+        hosPref: HospitalPreferences, 
+        capacity: CapacityMap, 
+        returnEvents: bool=False) -> StableMatchReturn:
 
     start = time.perf_counter()
     rank = buildRank(hosPref)
-    events: List[str] = []
+    events: EventLog = []
 
     def log(line: str) -> None:
         if returnEvents:
             events.append(line)
 
     # Initialize state
-    resident = list(resPref.keys())
-    hospital = list(hosPref.keys())
+    resident: list[ResidentId] = list(resPref.keys())
+    hospital: list[HospitalId] = list(hosPref.keys())
     
-    nextChoice: Dict[str, int] = {r: 0 for r in resident}
-    resMatch: Dict[str, Optional[str]] = {r: None for r in resident}
-    hosHeld: Dict[str, List[str]] = {h: [] for h in hospital}
+    nextChoice: dict[ResidentId, int] = {r: 0 for r in resident}
+    resMatch: ResidentMatch = {r: None for r in resident}
+    hosHeld: HospitalHeld = {h: [] for h in hospital}
 
-    free: Deque[str] = deque([r for r in resident if len(resPref.get(r, [])) > 0])
+    free: FreeQueue = deque([r for r in resident if len(resPref.get(r, [])) > 0])
     log(f"START: {list(free)}")
 
     while free:
@@ -92,7 +99,7 @@ def stableMatch(
             else:
                 log(f"Exhausted Kicked: {worst}")
 
-    hosMatch: Dict[str, Set[str]] = {h: set(rs) for h, rs in hosHeld.items()}
+    hosMatch: HospitalMatch = {h: set(rs) for h, rs in hosHeld.items()}
 
     elapsed = (time.perf_counter() - start) * 1000
     log(f"FINISH, Elapsed: {elapsed:.2f} ms")
@@ -104,11 +111,11 @@ def stableMatch(
 # Auto Mode
 # Build hospital preference lists based on constraints
 def generateHosPref(
-    resInfo: Dict[str, Dict[str, Any]],
-    hosCriteria: Dict[str, Dict[str, Any]],) -> Dict[str, List[str]]:
+    resInfo: ResidentsInfoMap,
+    hosCriteria: HospitalsCriteriaMap) -> HospitalPreferences:
 
     allResidents = list(resInfo.keys())
-    hosPref: Dict[str, List[str]] = {}
+    hosPref: HospitalPreferences = {}
 
     for h, crit in hosCriteria.items():
         prefDeg = crit.get("prefDeg", [])

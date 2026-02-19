@@ -1,17 +1,18 @@
-from typing import Dict, List, Set, Tuple, Any, Optional
+from typing import Optional, Tuple
+
+from core.types import (
+    AutoCutoff, ManualCutoff, ResidentId, HospitalId, ResidentPreferences, 
+    HospitalPreferences, ResidentMatch, HospitalMatch, ResidentsInfoMap, 
+    HospitalsCriteriaMap, ExplainUnmatchedResult, RankTable, HospitalList)
 
 def explainUnmatched(
     mode: str,
-    resPref: Dict[str, List[str]],
-    resMatch: Dict[str, Optional[str]],
-    hosMatch: Dict[str, Set[str]],
-    *,
-    # For AUTO (strict degree + GPA)
-    resInfo: Optional[Dict[str, Dict[str, Any]]] = None,
-    hosCriteria: Optional[Dict[str, Dict[str, Any]]] = None,
-    # For MANUAL
-    hosPref: Optional[Dict[str, List[str]]] = None,
-) -> List[Tuple[str, str]]:
+    resPref: ResidentPreferences,
+    resMatch: ResidentMatch,
+    hosMatch: HospitalMatch,
+    resInfo: Optional[ResidentsInfoMap] = None,
+    hosCriteria: Optional[HospitalsCriteriaMap] = None,
+    hosPref: Optional[HospitalPreferences] = None) -> ExplainUnmatchedResult:
 
     def resKey(r: str) -> int:
         return int(r[1:]) if len(r) > 1 and r[1:].isdigit() else 10**9
@@ -34,15 +35,11 @@ def explainUnmatched(
     return explainManual(unmatchedResidents, resPref, rank, hosMatch, cutoffManual)
 
 
-def buildRank(hosPref: Dict[str, List[str]]) -> Dict[str, Dict[str, int]]:
+def buildRank(hosPref: HospitalPreferences) -> RankTable:
     return {h: {r: i for i, r in enumerate(prefs)} for h, prefs in hosPref.items()}
 
-def buildCutoffAuto(
-    resInfo: Dict[str, Dict[str, Any]],
-    hosMatch: Dict[str, Set[str]],
-) -> Dict[str, Optional[Tuple[float, str]]]:
-    
-    cutoff: Dict[str, Optional[Tuple[float, str]]] = {}
+def buildCutoffAuto(resInfo: ResidentsInfoMap, hosMatch: HospitalMatch) -> AutoCutoff:
+    cutoff: AutoCutoff= {}
 
     for h, rs in hosMatch.items():
         if not rs:
@@ -50,7 +47,7 @@ def buildCutoffAuto(
             continue
 
         worstGPA: Optional[float] = None
-        worstId: Optional[str] = None
+        worstId: Optional[ResidentId] = None
 
         for r in rs:
             gpa = float(resInfo.get(r, {}).get("gpa", 0.0))
@@ -66,21 +63,21 @@ def buildCutoffAuto(
     return cutoff
 
 def explainAutoStrict(
-    unmatchedResidents: List[str],
-    resPref: Dict[str, List[str]],
-    resInfo: Dict[str, Dict[str, Any]],
-    hosCriteria: Dict[str, Dict[str, Any]],
-    cutoffAuto: Dict[str, Optional[Tuple[float, str]]],
-) -> List[Tuple[str, Dict[str, Any]]]:
-    out: List[Tuple[str, Dict[str, Any]]] = []
+    unmatchedResidents: list[ResidentId],
+    resPref: ResidentPreferences,
+    resInfo: ResidentsInfoMap,
+    hosCriteria: HospitalsCriteriaMap,
+    cutoffAuto: AutoCutoff) -> ExplainUnmatchedResult:
+
+    out: ExplainUnmatchedResult = []
 
     for r in unmatchedResidents:
         degree = resInfo.get(r, {}).get("degree", None)
         gpa = float(resInfo.get(r, {}).get("gpa", 0.0))
         prefs = resPref.get(r, [])
 
-        eligible: List[str] = []
-        ineligible: List[str] = []
+        eligible: HospitalList = []
+        ineligible: HospitalList = []
 
         for h in prefs:
             prefDeg = hosCriteria.get(h, {}).get("prefDeg", [])
@@ -105,10 +102,10 @@ def explainAutoStrict(
             ))
             continue
 
-        blocked: List[str] = []
-        closestH: Optional[str] = None
+        blocked: HospitalList = []
+        closestH: Optional[HospitalId] = None
         closestGap: Optional[float] = None
-        closestCut: Optional[Tuple[float, str]] = None
+        closestCut: Optional[Tuple[float, ResidentId]] = None
 
         for h in eligible:
             cut = cutoffAuto.get(h, None)
@@ -150,12 +147,8 @@ def explainAutoStrict(
 
     return out
 
-def buildCutoffManual(
-    rank: Dict[str, Dict[str, int]],
-    hosMatch: Dict[str, Set[str]],
-) -> Dict[str, Optional[Tuple[int, str]]]:
-    
-    cutoff: Dict[str, Optional[Tuple[int, str]]] = {}
+def buildCutoffManual(rank: RankTable, hosMatch: HospitalMatch) -> ManualCutoff:
+    cutoff: ManualCutoff = {}
 
     for h, rs in hosMatch.items():
         if not rs:
@@ -163,7 +156,7 @@ def buildCutoffManual(
             continue
 
         worstRankIndex: Optional[int] = None
-        worstId: Optional[str] = None
+        worstId: Optional[ResidentId] = None
 
         for r in rs:
             if r not in rank.get(h, {}):
@@ -183,19 +176,19 @@ def buildCutoffManual(
     return cutoff
 
 def explainManual(
-    unmatchedResidents: List[str],
-    resPref: Dict[str, List[str]],
-    rank: Dict[str, Dict[str, int]],
-    hosMatch: Dict[str, Set[str]],
-    cutoffManual: Dict[str, Optional[Tuple[int, str]]],
-) -> List[Tuple[str, Dict[str, Any]]]:
-    out: List[Tuple[str, Dict[str, Any]]] = []
+    unmatchedResidents: list[ResidentId],
+    resPref: ResidentPreferences,
+    rank: RankTable,
+    hosMatch: HospitalMatch,
+    cutoffManual: ManualCutoff) -> ExplainUnmatchedResult:
+    
+    out: ExplainUnmatchedResult = []
 
     for r in unmatchedResidents:
         prefs = resPref.get(r, [])
 
-        rankedHospitals: List[str] = []
-        unrankedHospitals: List[str] = []
+        rankedHospitals: HospitalList = []
+        unrankedHospitals: HospitalList = []
 
         for h in prefs:
             if r in rank.get(h, {}):
@@ -217,10 +210,10 @@ def explainManual(
             ))
             continue
 
-        blocked: List[str] = []
-        closestH: Optional[str] = None
+        blocked: HospitalList = []
+        closestH: Optional[HospitalId] = None
         closestDelta: Optional[int] = None
-        closestCut: Optional[Tuple[int, str]] = None
+        closestCut: Optional[Tuple[int, ResidentId]] = None
 
         for h in rankedHospitals:
             cut = cutoffManual.get(h, None)
