@@ -90,9 +90,6 @@ def explainAutoStrict(
             out.append((
                 r,
                 {
-                    "mode": "Auto",
-                    "degree": degree,
-                    "gpa": gpa,
                     "ineligible": ineligible,
                     "eligible": [],
                     "closestMiss": None,
@@ -125,8 +122,12 @@ def explainAutoStrict(
         closestMiss = None
         if closestH is not None and closestCut is not None and closestGap is not None:
             worstGPA, worstId = closestCut
-            closestMiss = f"{closestH} cutoff {worstGPA:.2f} (held by {worstId}); gap {closestGap:.2f}"
-
+            closestMiss = (
+                f"You were close at {closestH}, but they were full. "
+                f"The lowest GPA they accepted was {worstGPA:.2f} (held by {worstId}). "
+                f"Your GPA was {gpa:.2f}, so you were {closestGap:.2f} below the cutoff."
+            )
+            
         note = None
         if not blocked:
             note = "Eligible hospitals exist and cutoff doesn't strictly block you; proposal path/ordering may explain mismatch."
@@ -134,9 +135,6 @@ def explainAutoStrict(
         out.append((
             r,
             {
-                "mode": "Auto",
-                "degree": degree,
-                "gpa": gpa,
                 "ineligible": ineligible,
                 "eligible": eligible,
                 "closestMiss": closestMiss,
@@ -200,7 +198,6 @@ def explainManual(
             out.append((
                 r,
                 {
-                    "mode": "Manual",
                     "ranked": [],
                     "unranked": unrankedHospitals,
                     "closestMiss": None,
@@ -234,9 +231,13 @@ def explainManual(
         closestMiss = None
         if closestH is not None and closestCut is not None and closestDelta is not None:
             worstRankIndex, worstId = closestCut
+            myRank = rank[closestH][r] + 1
+            cutoffRank = worstRankIndex + 1
+
             closestMiss = (
-                f"{closestH} cutoff rank={worstRankIndex+1} (held by {worstId}); "
-                f"your rank={rank[closestH][r]+1}; delta={closestDelta}"
+                f"You were close at {closestH}, but they were full. "
+                f"They kept residents ranked {cutoffRank} or better (the last spot went to {worstId}). "
+                f"You were ranked {myRank}, so you missed it by {closestDelta} position(s)."
             )
 
         note = None
@@ -246,7 +247,6 @@ def explainManual(
         out.append((
             r,
             {
-                "mode": "Manual",
                 "ranked": rankedHospitals,
                 "unranked": unrankedHospitals,
                 "closestMiss": closestMiss,

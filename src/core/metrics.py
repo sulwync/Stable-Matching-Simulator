@@ -6,6 +6,9 @@ from core.types import (
 
 from core.gale_shapley import buildRank
 
+def r2(x: float) -> float:
+    return round(x + 1e-12, 2)
+
 def metrics(
     resPref: ResidentPreferences,
     hosPref: HospitalPreferences,
@@ -28,8 +31,6 @@ def metrics(
 
     # Max proposals by a single resident (unluckiest resident)
     proposalsByRes: dict[ResidentId, int] = {r: 0 for r in resPref.keys()}
-    unluckiestCount = 0
-
     if events is not None:
         for e in events:
             if e.startswith("Proposal:"):
@@ -38,23 +39,9 @@ def metrics(
                     r = parts[1]
                     proposalsByRes[r] = proposalsByRes.get(r, 0) + 1
 
-        for r, k in proposalsByRes.items():
-            if k > unluckiestCount:
-                unluckiestCount = k
-                unluckiestRes = r
-        
-        maxCount = 0
-        for r in proposalsByRes:
-            if proposalsByRes[r] > maxCount:
-                maxCount = proposalsByRes[r]
-
-        unluckiestRes = []
-        for r in proposalsByRes:
-            if proposalsByRes[r] == maxCount and maxCount > 0:
-                unluckiestRes.append(r)
-
-        unluckiestRes.sort()
-
+    maxCount = max(proposalsByRes.values(), default=0)
+    unluckiestRes = sorted([r for r, c in proposalsByRes.items() if c == maxCount and maxCount > 0])
+    unluckiestCount = maxCount
 
     # Average Resident's Preference Rank
     resRanks: list[int] = []
@@ -126,12 +113,13 @@ def metrics(
 
     firstChoiceRate = (firstChoiceCount / len(matchedResidents)) if matchedResidents else 0.0
 
-    return { "Unmatched Rate": unmatchedRate, 
-            "Average Resident's Preference Rank": avgResRank,
-            "Average Hospital's Preference Rank": avgHosRank, 
-            "Blocking Pairs": blockingPairs,
-            "First Choice Rate": firstChoiceRate,
-            "First Choice Count": firstChoiceCount,
-            "Total Proposals": totalProposals,
-            "Max Proposals By A Resident": (unluckiestRes, unluckiestCount),
-        }
+    return {
+        "Unmatched Rate": r2(unmatchedRate),
+        "Average Resident's Preference Rank": r2(avgResRank),
+        "Average Hospital's Preference Rank": r2(avgHosRank),
+        "First Choice Rate": r2(firstChoiceRate),
+        "First Choice Count": firstChoiceCount,
+        "Total Proposals": totalProposals,
+        "Blocking Pairs": blockingPairs,
+        "Max Proposals By A Resident": (unluckiestRes, unluckiestCount),
+    }

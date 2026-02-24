@@ -49,7 +49,7 @@ class ResidentsView(ttk.LabelFrame):
         gpa_label = ttk.Label(top, text="GPA")
         gpa_label.pack(side="left")
 
-        gpa = tk.Entry(top, width=6, relief="solid", bd=1)
+        gpa = PlaceholderEntry(top, "(e.g. 3.75)", relief="solid", bd=1, width=12)
         gpa.pack(side="left", padx=(6, 12))
 
         deg = ttk.Combobox(top, values=DEGREE_OPTIONS, state="readonly", width=14)
@@ -86,3 +86,53 @@ class ResidentsView(ttk.LabelFrame):
         self.add_resident()
         self.add_resident()
         self.set_auto_mode(False)
+
+    def get_data(self) -> list[dict]:
+        out = []
+        for row in self._rows:
+            pref = row["pref"].get_value() if hasattr(row["pref"], "get_value") else row["pref"].get().strip()
+
+            gpa = row["gpa"].get_value() if hasattr(row["gpa"], "get_value") else row["gpa"].get().strip()
+
+            deg = row["deg"].get().strip()
+            out.append({
+                "pref_str": pref,
+                "gpa_str": gpa,
+                "deg_str": deg,
+            })
+        return out
+    
+    def clear_rows(self) -> None:
+        for row in self._rows:
+            row["box"].destroy()
+        self._rows.clear()
+
+    def ensure_rows(self, n: int) -> None:
+        self.clear_rows()
+        for _ in range(n):
+            self.add_resident()
+
+    def load_manual_dataset(self, residents: list[dict]) -> None:
+        self.set_auto_mode(False)
+        self.ensure_rows(len(residents))
+
+        for i, r in enumerate(residents):
+            row = self._rows[i]
+            prefs = r.get("preference", [])
+            row["pref"].set_value(", ".join(prefs))
+
+    def load_auto_dataset(self, residents: list[dict]) -> None:
+        self.set_auto_mode(True)
+        self.ensure_rows(len(residents))
+
+        for i, r in enumerate(residents):
+            row = self._rows[i]
+            row["top"].grid()
+            row["gpa"].set_value(str(r.get("gpa", "")))
+            deg = (r.get("degree") or "").strip()
+            if deg:
+                row["deg"].set(deg)
+                
+            prefs = r.get("preference", [])
+            row["pref"].set_value(", ".join(prefs))
+

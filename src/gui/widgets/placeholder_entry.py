@@ -47,3 +47,10 @@ class PlaceholderEntry(tk.Entry):
 
     def reset(self) -> None:
         self._show_placeholder()
+
+    def set_value(self, text: str) -> None:
+        self.delete(0, "end")
+        self.insert(0, text)
+        self.config(fg=self.normal_fg)
+        self._has_placeholder = False
+

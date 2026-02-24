@@ -57,12 +57,8 @@ class HospitalsView(ttk.LabelFrame):
         self.btn_add.grid(row=2, column=0, sticky="ew", pady=(8, 0))
 
         self._rows: list[dict] = []
-
-        # start with 2 like your mock
         self.add_hospital()
         self.add_hospital()
-
-        # apply initial mode
         self.set_auto_mode(self._is_auto.get())
 
     def _toggle_mode(self) -> None:
@@ -72,7 +68,6 @@ class HospitalsView(ttk.LabelFrame):
             self._on_mode_change(is_auto)
 
     def set_auto_mode(self, is_auto: bool) -> None:
-        # Update existing rows to show/hide correct fields
         for row in self._rows:
             self._apply_mode_to_row(row, is_auto)
 
@@ -87,7 +82,7 @@ class HospitalsView(ttk.LabelFrame):
         cap_label = ttk.Label(box, text="Capacity")
         cap_label.grid(row=0, column=0, sticky="w")
 
-        cap = tk.Entry(box, width=10, relief="solid", bd=1)
+        cap = PlaceholderEntry(box, "(e.g. 2)", relief="solid", bd=1, width=10)
         cap.grid(row=0, column=1, sticky="w", padx=(10, 0))
 
         # Manual-only: hospital preference entry
@@ -99,7 +94,7 @@ class HospitalsView(ttk.LabelFrame):
         pref_deg.set("Preferred Degree Type")
         pref_deg.grid(row=1, column=0, columnspan=3, sticky="ew", pady=(8, 0))
 
-        # Auto-only: generated hospital preference (display)
+        # Auto-only: generated hospital preference
         auto_gen = tk.Entry(box, relief="solid", bd=1)
         auto_gen.grid(row=2, column=0, columnspan=3, sticky="ew", pady=(8, 0))
         auto_gen.insert(0, "Generated Preference (auto)")
@@ -131,7 +126,6 @@ class HospitalsView(ttk.LabelFrame):
             row["auto_gen"].grid_remove()
             row["manual_pref"].grid()
 
-
     def reset(self) -> None:
         for row in self._rows:
             row["box"].destroy()
@@ -140,3 +134,72 @@ class HospitalsView(ttk.LabelFrame):
         self.add_hospital()
         self.add_hospital()
         self.set_auto_mode(False)
+
+    def get_data(self) -> list[dict]:
+        out = []
+        for row in self._rows:
+            cap = row["cap"].get_value() if hasattr(row["cap"], "get_value") else row["cap"].get().strip()
+            manual_pref = row["manual_pref"].get_value() if hasattr(row["manual_pref"], "get_value") else row["manual_pref"].get().strip()
+            pref_deg = row["pref_deg"].get().strip()
+            if pref_deg == "Preferred Degree Type":
+                pref_deg = ""
+            out.append({
+                "capacity_str": cap,
+                "manual_pref_str": manual_pref,
+                "pref_deg_str": pref_deg,
+            })
+        return out
+
+    def set_generated_preferences(self, hosPref: dict[str, list[str]]) -> None:
+        for i, row in enumerate(self._rows):
+            hid = f"H{i+1}"
+            prefs = hosPref.get(hid, [])
+            text = ", ".join(prefs) if prefs else ""
+            ent = row["auto_gen"]
+            ent.configure(state="normal")
+            ent.delete(0, "end")
+            ent.insert(0, text)
+            ent.configure(state="disabled")
+
+    def clear_rows(self) -> None:
+        for row in self._rows:
+            row["box"].destroy()
+        self._rows.clear()
+
+    def ensure_rows(self, n: int) -> None:
+        self.clear_rows()
+        for _ in range(n):
+            self.add_hospital()
+
+    def load_manual_dataset(self, hospitals: list[dict]) -> None:
+        self._is_auto.set(False)
+        self.set_auto_mode(False)
+
+        self.ensure_rows(len(hospitals))
+
+        for i, h in enumerate(hospitals):
+            row = self._rows[i]
+            row["cap"].set_value(str(h.get("capacity", "")))
+            prefs = h.get("preference", [])
+            row["manual_pref"].set_value(", ".join(prefs))
+
+    def load_auto_dataset(self, hospitals: list[dict]) -> None:
+        self._is_auto.set(True)
+        self.set_auto_mode(True)
+
+        self.ensure_rows(len(hospitals))
+
+        for i, h in enumerate(hospitals):
+            row = self._rows[i]
+            row["cap"].set_value(str(h.get("capacity", "")))
+            deg = (h.get("pref_degree") or "").strip()
+            if deg:
+                row["pref_deg"].set(deg)
+
+            ent = row["auto_gen"]
+            ent.configure(state="normal")
+            ent.delete(0, "end")
+            ent.insert(0, "Generated Preference (auto)")
+            ent.configure(state="disabled")
+
+
