@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import sys
+import json
+import subprocess
+import tempfile
+import os
 from pathlib import Path
 import tkinter as tk
-from tkinter import ttk
-import json
-from tkinter import filedialog, messagebox
+from tkinter import ttk, filedialog, messagebox
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -13,7 +15,6 @@ from gui.controller import AppController
 from gui.views.hospitals_view import HospitalsView
 from gui.views.residents_view import ResidentsView
 from gui.views.output_view import OutputView
-
 
 class StableMatchingApp(tk.Tk):
     def __init__(self) -> None:
@@ -85,7 +86,6 @@ class StableMatchingApp(tk.Tk):
     def _on_mode_change(self, is_auto: bool) -> None:
         self.hospitals_view.set_auto_mode(is_auto)
         self.residents_view.set_auto_mode(is_auto)
-        self.output_view.set_status(f"Mode: {'Auto' if is_auto else 'Manual'}")
 
     def _on_run(self) -> None:
         is_auto = self.hospitals_view._is_auto.get()
@@ -113,6 +113,23 @@ class StableMatchingApp(tk.Tk):
 
         self.output_view.set_log(result.events or [])
         self._last_run_result = result
+
+        self.output_view.set_events_json(result.events_json or [])
+        self.output_view.set_visualize_handler(self._open_d3_viewer)
+
+    def _open_d3_viewer(self, events_json: list[dict]) -> None:
+        if not events_json:
+            messagebox.showinfo("Visualize (D3)", "No replay events available. Run the simulation first.")
+            return
+
+        fd, path = tempfile.mkstemp(prefix="stablematch_events_", suffix=".json")
+        os.close(fd)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(events_json, f)
+
+        # Ensure module resolution by running from project root
+        project_root = str(Path(__file__).resolve().parents[1])
+        subprocess.Popen([sys.executable, "-m", "gui.d3_viewer", path], cwd=project_root)
 
     def _on_import_dataset(self) -> None:
         path = filedialog.askopenfilename(
@@ -267,6 +284,7 @@ class StableMatchingApp(tk.Tk):
         is_auto = self.hospitals_view._is_auto.get()
         self._on_mode_change(is_auto)
         self.output_view.set_log([])
+        self.output_view.set_events_json([])
 
 def main() -> None:
     app = StableMatchingApp()

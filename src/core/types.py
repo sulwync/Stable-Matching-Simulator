@@ -24,7 +24,7 @@ HospitalHeld = Dict[HospitalId, List[ResidentId]]  # internal "held list" during
 
 # ---------- Derived structures ----------
 RankTable = Dict[HospitalId, Dict[ResidentId, int]]
-EventLog = List[str]
+EventLog = List[Any]
 FreeQueue = Deque[ResidentId]
 
 # ---------- Stable match return shapes ----------

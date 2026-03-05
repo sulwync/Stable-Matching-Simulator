@@ -26,6 +26,7 @@ class OutputView(ttk.LabelFrame):
             padx=10, pady=10,
             state="disabled",
         )
+
         self.report.grid(row=0, column=0, sticky="nsew")
         self.report.configure(yscrollcommand=self.vbar.set)
         self.vbar.configure(command=self.report.yview)
@@ -37,8 +38,6 @@ class OutputView(ttk.LabelFrame):
         self.report.tag_configure("good", foreground="#1a7f37")
         self.report.tag_configure("bad", foreground="#b42318")
         self.report.tag_configure("key", font=("Segoe UI", 10, "bold"))
-
-        self.set_status("")
 
         # Log controls
         self._events: list[str] = []
@@ -73,11 +72,15 @@ class OutputView(ttk.LabelFrame):
 
         self.log_frame.grid_remove()
 
+        # D3 Visualizer
+        self._events_json: list[dict] = []
+        self._on_visualize = None
+        self.btn_visualize = ttk.Button(log_controls, text="Visualize (D3)", command=self._visualize_clicked)
+        self.btn_view_log.pack(side="left")
+        self.btn_visualize.pack(side="left", padx=(8, 0))
+
     def reset(self) -> None:
         self._write("")
-
-    def set_status(self, msg: str) -> None:
-        return
 
     def _write_line(self, text: str, tag: str | None) -> None:
         if tag:
@@ -86,8 +89,8 @@ class OutputView(ttk.LabelFrame):
             self.report.insert("end", text + "\n")
 
     def _write_mono_table_hos_match(self, hosMatch: dict[str, set[str]]) -> None:
-        for h in sorted(hosMatch.keys()):
-            rs = sorted(hosMatch[h])
+        for h in sorted(hosMatch.keys(), key=lambda x: int(x[1:])):
+            rs = sorted(hosMatch[h], key=lambda x: int(x[1:]))
             rs_str = ", ".join(rs) if rs else "(none)"
             line = f"{h:<9}| {rs_str}"
             self._write_line(line, "mono")
@@ -170,7 +173,7 @@ class OutputView(ttk.LabelFrame):
             res_list, count = mp
             res_list = sorted(res_list) if isinstance(res_list, list) else []
             if count == 0 or not res_list:
-                self._write_line("(No Proposals Recorded", "muted")
+                self._write_line("No Proposals Recorded", "muted")
             else:
                 who = "resident" if len(res_list) == 1 else "residents"
                 proposals_word = "proposal" if count == 1 else "proposals"
@@ -223,7 +226,7 @@ class OutputView(ttk.LabelFrame):
             if not bp:
                 self._write_line("Blocking pairs: None (stable)", "good")
             else:
-                self._write_line(f"Blocking pairs found: {len(bp)} ❌ (not stable)", "bad")
+                self._write_line(f"Blocking pairs found: {len(bp)} (not stable)", "bad")
                 for (r, h) in bp[:20]:
                     self._write_line(f"     - ({r}, {h})", "mono")
                 if len(bp) > 20:
@@ -236,8 +239,8 @@ class OutputView(ttk.LabelFrame):
 
     def _format_hos_match(self, hosMatch: dict[str, set[str]]) -> str:
         out: list[str] = []
-        for h in sorted(hosMatch.keys()):
-            rs = sorted(hosMatch[h])
+        for h in sorted(hosMatch.keys(), key=lambda x: int(x[1:])):
+            rs = sorted(hosMatch[h], key=lambda x: int(x[1:]))
             out.append(f"{h}: " + (", ".join(rs) if rs else "(none)") + "\n")
         return "".join(out)
 
@@ -334,3 +337,18 @@ class OutputView(ttk.LabelFrame):
             messagebox.showinfo("Export Log", "Log exported successfully.")
         except Exception as e:
             messagebox.showerror("Export failed", str(e))
+
+    def set_events_json(self, events_json: list[dict]) -> None:
+        self._events_json = events_json or []
+
+    def set_visualize_handler(self, handler) -> None:
+        self._on_visualize = handler
+
+    def _visualize_clicked(self) -> None:
+        if not self._events_json:
+            messagebox.showinfo("Visualize (D3)", "No replay events available. Run the simulation first.")
+            return
+        if self._on_visualize is None:
+            messagebox.showerror("Visualize (D3)", "Visualizer handler not set.")
+            return
+        self._on_visualize(self._events_json)

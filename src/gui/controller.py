@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from core.types import EventLog 
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set
 
 from core.gale_shapley import stableMatch, stableMatchWithConst, generateHosPref
 from core.metrics import metrics
@@ -27,7 +26,7 @@ def to_float(s: str) -> Optional[float]:
         return float(s)
     except Exception:
         return None
-    
+
 
 @dataclass
 class RunResult:
@@ -37,7 +36,8 @@ class RunResult:
     stats: Dict[str, Any]
     unmatched_explain: Any
     hosPref: Optional[Dict[str, List[str]]] = None
-    events: Optional[list[str]] = None   # ✅ add this
+    events: Optional[List[str]] = None
+    events_json: Optional[List[Dict[str, Any]]] = None
 
 
 class AppController:
@@ -50,32 +50,46 @@ class AppController:
     ) -> RunResult:
 
         # IDs
-        H = [f"H{i+1}" for i in range(len(hospitals))]
-        R = [f"R{i+1}" for i in range(len(residents))]
+        H: List[str] = [f"H{i+1}" for i in range(len(hospitals))]
+        R: List[str] = [f"R{i+1}" for i in range(len(residents))]
+        Hset = set(H)
+        Rset = set(R)
 
-        # capacity
+        # Capacity
         capacity: Dict[str, int] = {}
         for hid, row in zip(H, hospitals):
             cap_s = (row.get("capacity_str") or "").strip()
             cap_v = to_int(cap_s)
-            capacity[hid] = cap_v if cap_v is not None and cap_v > 0 else 0
+            capacity[hid] = cap_v if (cap_v is not None and cap_v > 0) else 0
 
-        # resident preferences
+        # Resident Preferences
         resPref: Dict[str, List[str]] = {}
         for rid, row in zip(R, residents):
-            prefs = parse_tokens((row.get("pref_str") or "").strip())
-            prefs = [h for h in prefs if h in set(H)]
+            raw = (row.get("pref_str") or "").strip()
+            prefs = [h for h in parse_tokens(raw) if h in Hset]
             resPref[rid] = prefs
 
+        # Manual mode
         if not is_auto:
-            # manual hospital preferences
             hosPref: Dict[str, List[str]] = {}
             for hid, row in zip(H, hospitals):
-                prefs = parse_tokens((row.get("manual_pref_str") or "").strip())
-                prefs = [r for r in prefs if r in set(R)]
+                raw = (row.get("manual_pref_str") or "").strip()
+                prefs = [r for r in parse_tokens(raw) if r in Rset]
                 hosPref[hid] = prefs
 
-            resMatch, hosMatch, events = stableMatch(resPref, hosPref, capacity, returnEvents=True)
+            # Text events for OutputView
+            resMatch, hosMatch, events = stableMatch(
+                resPref, hosPref, capacity,
+                returnEvents=True
+            )
+
+            # JSON events for D3
+            _, _, events_json = stableMatch(
+                resPref, hosPref, capacity,
+                returnEvents=True,
+                eventMode="json"
+            )
+
             stats = metrics(resPref, hosPref, capacity, resMatch, hosMatch, events=events)
 
             unmatched_explain = explainUnmatched(
@@ -94,15 +108,16 @@ class AppController:
                 unmatched_explain=unmatched_explain,
                 hosPref=hosPref,
                 events=events,
+                events_json=events_json,
             )
 
-        # auto mode
+        # Auto mode
         resInfo: Dict[str, Dict[str, Any]] = {}
         for rid, row in zip(R, residents):
             gpa_s = (row.get("gpa_str") or "").strip()
             deg_s = (row.get("deg_str") or "").strip()
-
             gpa_v = to_float(gpa_s)
+
             resInfo[rid] = {
                 "gpa": gpa_v if gpa_v is not None else 0.0,
                 "degree": deg_s if deg_s else None,
@@ -113,11 +128,21 @@ class AppController:
             pref_deg = (row.get("pref_deg_str") or "").strip()
             hosCriteria[hid] = {"prefDeg": [pref_deg] if pref_deg else []}
 
-        # generate hospital preference
+        # Displayable generated hospital preference
         hosPref = generateHosPref(resInfo, hosCriteria)
 
-        # run the constrained matching
-        resMatch, hosMatch, events = stableMatchWithConst(resPref, resInfo, hosCriteria, capacity, returnEvents=True)
+        # Text events
+        resMatch, hosMatch, events = stableMatchWithConst(
+            resPref, resInfo, hosCriteria, capacity,
+            returnEvents=True
+        )
+
+        # JSON events
+        _, _, events_json = stableMatchWithConst(
+            resPref, resInfo, hosCriteria, capacity,
+            returnEvents=True,
+            eventMode="json"
+        )
 
         stats = metrics(resPref, hosPref, capacity, resMatch, hosMatch, events=events)
 
@@ -138,4 +163,5 @@ class AppController:
             unmatched_explain=unmatched_explain,
             hosPref=hosPref,
             events=events,
+            events_json=events_json,
         )

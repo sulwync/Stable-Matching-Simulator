@@ -8,7 +8,7 @@ from gui.widgets.scrollframe import ScrollFrame
 from gui.widgets.placeholder_entry import PlaceholderEntry
 
 
-DEGREE_OPTIONS = ["Undergraduate", "Postgraduate"]
+DEGREE_OPTIONS = ["Undergraduate", "Postgraduate", "All"]
 
 def add_placeholder(entry: tk.Entry, text: str, *, muted="#888888", normal="#000000") -> None:
     entry.insert(0, text)
