@@ -3,18 +3,28 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import sys
 import time
 from pathlib import Path
 from statistics import mean
 
 import matplotlib.pyplot as plt
 
-from generate_dataset import generate_manual_dataset, generate_auto_dataset
-from core.gale_shapley import stableMatch, stableMatchWithConst
+try:
+    from ..generate_dataset import generate_manual_dataset, generate_auto_dataset
+    from ..core.gale_shapley import stableMatch, stableMatchWithConst
+    from ..dataset_utils import dataset_to_manual_inputs, dataset_to_auto_inputs
+except ImportError:
+    ROOT = Path(__file__).resolve().parents[1]
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from generate_dataset import generate_manual_dataset, generate_auto_dataset
+    from core.gale_shapley import stableMatch, stableMatchWithConst
+    from dataset_utils import dataset_to_manual_inputs, dataset_to_auto_inputs
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATASET_DIR = BASE_DIR / "dataset"
+DATASET_DIR = BASE_DIR.parent / "dataset"
 
 
 def save_dataset(dataset: dict, mode: str, hospitals: int, residents: int, trial: int):
@@ -23,61 +33,6 @@ def save_dataset(dataset: dict, mode: str, hospitals: int, residents: int, trial
     with open(path, "w", encoding="utf-8") as f:
         json.dump(dataset, f, indent=2)
     return path
-
-
-def dataset_to_manual_inputs(dataset: dict):
-    hospitals = dataset["hospitals"]
-    residents = dataset["residents"]
-
-    res_pref = {
-        f"R{i+1}": resident.get("preference", [])
-        for i, resident in enumerate(residents)
-    }
-
-    hos_pref = {
-        f"H{i+1}": hospital.get("preference", [])
-        for i, hospital in enumerate(hospitals)
-    }
-
-    capacity = {
-        f"H{i+1}": hospital.get("capacity", 0)
-        for i, hospital in enumerate(hospitals)
-    }
-
-    return res_pref, hos_pref, capacity
-
-
-def dataset_to_auto_inputs(dataset: dict):
-    hospitals = dataset["hospitals"]
-    residents = dataset["residents"]
-
-    res_pref = {
-        f"R{i+1}": resident.get("preference", [])
-        for i, resident in enumerate(residents)
-    }
-
-    res_info = {
-        f"R{i+1}": {
-            "gpa": resident.get("gpa", 0.0),
-            "degree": resident.get("degree", "")
-        }
-        for i, resident in enumerate(residents)
-    }
-
-    hos_criteria = {
-        f"H{i+1}": {
-            "prefDeg": [hospital.get("pref_degree", "All")]
-        }
-        for i, hospital in enumerate(hospitals)
-    }
-
-    capacity = {
-        f"H{i+1}": hospital.get("capacity", 0)
-        for i, hospital in enumerate(hospitals)
-    }
-
-    return res_pref, res_info, hos_criteria, capacity
-
 
 def run_once(dataset: dict):
     mode = dataset["mode"]
@@ -248,9 +203,9 @@ def main():
     parser.add_argument("--hospital-ratio", type=float, default=0.5)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--csv", type=str, default=str(BASE_DIR / "results" / "runtime_study.csv"))
-    parser.add_argument("--runtime-graph", type=str, default=str(BASE_DIR / "results" / "runtime_graph.png"))
-    parser.add_argument("--proposal-graph", type=str, default=str(BASE_DIR / "results" / "proposal_graph.png"))
+    parser.add_argument("--csv", type=str, default=str(BASE_DIR.parent / "results" / "runtime_study.csv"))
+    parser.add_argument("--runtime-graph", type=str, default=str(BASE_DIR.parent / "results" / "runtime_graph.png"))
+    parser.add_argument("--proposal-graph", type=str, default=str(BASE_DIR.parent / "results" / "proposal_graph.png"))
     args = parser.parse_args()
 
     sizes = build_sizes(args.start, args.stop, args.step)
