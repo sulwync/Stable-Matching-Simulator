@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 import argparse
+import csv
 from pathlib import Path
 from statistics import mean
 
-from core.gale_shapley import stableMatch, stableMatchWithConst, generateHosPref
+from core.gale_shapley import stableMatch, generateHosPref
 from core.metrics import metrics
 from dataset_utils import load_dataset, group_datasets_by_size, dataset_to_manual_inputs, dataset_to_auto_inputs
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATASET_DIR = BASE_DIR / "dataset"
+DATASET_DIR = BASE_DIR / "dataset" / "runtime"
+RESULTS_DIR = BASE_DIR / "results" / "correctness"
 
 
 def check_correctness(dataset: dict) -> dict:
@@ -57,6 +59,7 @@ def check_correctness(dataset: dict) -> dict:
 
 def run_correctness_study(dataset_dir: Path):
     groups = group_datasets_by_size(dataset_dir)
+    results = []
     
     print("=" * 100)
     print("Correctness Study for Gale-Shapley Algorithm")
@@ -68,21 +71,58 @@ def run_correctness_study(dataset_dir: Path):
     print("-" * 125)
     
     for (num_h, num_r), files in sorted(groups.items()):
-        results = []
+        dataset_results = []
         for file_path in files:
             dataset = load_dataset(file_path)
             result = check_correctness(dataset)
-            results.append(result)
+            dataset_results.append(result)
         
-        instances_tested = len(results)
-        valid_matchings = sum(1 for r in results if r["valid_matching"])
-        stable_matchings = sum(1 for r in results if r["stable_matching"])
-        total_cap_violations = sum(r["capacity_violations"] for r in results)
-        total_invalid_matches = sum(r["invalid_matches"] for r in results)
-        avg_blocking_pairs = mean(r["blocking_pairs_count"] for r in results)
+        instances_tested = len(dataset_results)
+        valid_matchings = sum(1 for r in dataset_results if r["valid_matching"])
+        stable_matchings = sum(1 for r in dataset_results if r["stable_matching"])
+        total_cap_violations = sum(r["capacity_violations"] for r in dataset_results)
+        total_invalid_matches = sum(r["invalid_matches"] for r in dataset_results)
+        avg_blocking_pairs = mean(r["blocking_pairs_count"] for r in dataset_results)
         
         setting = f"{num_h} hospitals, {num_r} residents"
         print(f"{setting:<25} {instances_tested:<15} {valid_matchings}/{instances_tested:<14} {stable_matchings}/{instances_tested:<14} {total_cap_violations:<20} {total_invalid_matches:<15} {avg_blocking_pairs:.2f}")
+        
+        results.append({
+            "setting": setting,
+            "hospitals": num_h,
+            "residents": num_r,
+            "instances_tested": instances_tested,
+            "valid_matchings": valid_matchings,
+            "stable_matchings": stable_matchings,
+            "capacity_violations": total_cap_violations,
+            "invalid_matches": total_invalid_matches,
+            "avg_blocking_pairs": round(avg_blocking_pairs, 2),
+        })
+    
+    return results
+
+
+def save_correctness_csv(results: list[dict], output_path: Path):
+    """Save correctness study results to CSV."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=[
+                "setting",
+                "hospitals",
+                "residents",
+                "instances_tested",
+                "valid_matchings",
+                "stable_matchings",
+                "capacity_violations",
+                "invalid_matches",
+                "avg_blocking_pairs",
+            ],
+        )
+        writer.writeheader()
+        writer.writerows(results)
 
 
 def main():
@@ -90,18 +130,30 @@ def main():
     parser.add_argument(
         "--dataset-dir",
         type=str,
-        default=str(BASE_DIR / "dataset"),
+        default=str(DATASET_DIR),
         help="Path to the dataset directory"
+    )
+    parser.add_argument(
+        "--results-dir",
+        type=str,
+        default=str(RESULTS_DIR),
+        help="Path to the results directory"
     )
     
     args = parser.parse_args()
     
     dataset_dir = Path(args.dataset_dir)
+    results_dir = Path(args.results_dir)
+    
     if not dataset_dir.exists():
         print(f"Dataset directory {dataset_dir} does not exist.")
         return
     
-    run_correctness_study(dataset_dir)
+    results = run_correctness_study(dataset_dir)
+    
+    csv_path = results_dir / "correctness_study.csv"
+    save_correctness_csv(results, csv_path)
+    print(f"\nCSV saved: {csv_path}")
 
 
 if __name__ == "__main__":

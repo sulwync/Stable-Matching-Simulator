@@ -1,0 +1,994 @@
+{
+  "name": "Generated Manual Dataset",
+  "mode": "manual",
+  "hospitals": [
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    }
+  ],
+  "residents": [
+    {
+      "preference": [
+        "H68",
+        "H7",
+        "H51",
+        "H16",
+        "H61",
+        "H23",
+        "H40",
+        "H10",
+        "H67",
+        "H50",
+        "H33",
+        "H54",
+        "H75",
+        "H28",
+        "H41",
+        "H58",
+        "H25",
+        "H43",
+        "H11",
+        "H15",
+        "H34",
+        "H27",
+        "H9",
+        "H73",
+        "H39",
+        "H31",
+        "H35",
+        "H76",
+        "H1",
+        "H6",
+        "H77",
+        "H64",
+        "H18",
+        "H57",
+        "H8"
+      ]
+    },
+    {
+      "preference": [
+        "H20",
+        "H1",
+        "H54",
+        "H36",
+        "H41",
+        "H35",
+        "H57",
+        "H78",
+        "H32",
+        "H56",
+        "H25",
+        "H39",
+        "H26",
+        "H3",
+        "H60",
+        "H70",
+        "H66",
+        "H37",
+        "H73"
+      ]
+    },
+    {
+      "preference": [
+        "H30",
+        "H34",
+        "H12",
+        "H22",
+        "H50",
+        "H61",
+        "H18",
+        "H1",
+        "H33",
+        "H36",
+        "H53",
+        "H29",
+        "H24",
+        "H55",
+        "H31",
+        "H21",
+        "H10",
+        "H41",
+        "H8",
+        "H66",
+        "H62",
+        "H54",
+        "H11",
+        "H74",
+        "H45"
+      ]
+    },
+    {
+      "preference": [
+        "H24",
+        "H8",
+        "H25",
+        "H19",
+        "H18",
+        "H58",
+        "H52",
+        "H62",
+        "H10",
+        "H44",
+        "H70",
+        "H76",
+        "H60",
+        "H59",
+        "H32",
+        "H69",
+        "H2",
+        "H17",
+        "H38",
+        "H65",
+        "H75",
+        "H36"
+      ]
+    },
+    {
+      "preference": [
+        "H62",
+        "H26",
+        "H9",
+        "H12",
+        "H72",
+        "H79",
+        "H57",
+        "H4",
+        "H33",
+        "H65",
+        "H80",
+        "H21",
+        "H61",
+        "H76",
+        "H35",
+        "H13",
+        "H24",
+        "H70",
+        "H17",
+        "H36",
+        "H58"
+      ]
+    },
+    {
+      "preference": [
+        "H14",
+        "H16",
+        "H27",
+        "H20",
+        "H9",
+        "H23",
+        "H51",
+        "H30",
+        "H54",
+        "H18",
+        "H44",
+        "H61",
+        "H36",
+        "H46",
+        "H34",
+        "H58",
+        "H31"
+      ]
+    },
+    {
+      "preference": [
+        "H62",
+        "H27",
+        "H51",
+        "H14",
+        "H6",
+        "H44",
+        "H45",
+        "H63",
+        "H69",
+        "H12",
+        "H7",
+        "H59",
+        "H28",
+        "H3",
+        "H58",
+        "H4",
+        "H15",
+        "H54",
+        "H80",
+        "H20",
+        "H34",
+        "H47",
+        "H2",
+        "H65",
+        "H31"
+      ]
+    },
+    {
+      "preference": [
+        "H8",
+        "H57",
+        "H26",
+        "H58",
+        "H49",
+        "H30",
+        "H33",
+        "H42",
+        "H24",
+        "H36",
+        "H78",
+        "H15",
+        "H70",
+        "H37",
+        "H11",
+        "H69",
+        "H34",
+        "H19",
+        "H48",
+        "H74",
+        "H60",
+        "H13",
+        "H14",
+        "H6",
+        "H2",
+        "H47",
+        "H12",
+        "H35",
+        "H65",
+        "H16",
+        "H44",
+        "H39",
+        "H18",
+        "H45",
+        "H1",
+        "H77",
+        "H29"
+      ]
+    },
+    {
+      "preference": [
+        "H79",
+        "H32",
+        "H77",
+        "H75",
+        "H22",
+        "H52",
+        "H63",
+        "H66",
+        "H2",
+        "H69",
+        "H3",
+        "H56",
+        "H37",
+        "H65",
+        "H9",
+        "H31",
+        "H43",
+        "H27",
+        "H7",
+        "H51",
+        "H26",
+        "H59",
+        "H44",
+        "H6",
+        "H28",
+        "H61",
+        "H48",
+        "H57",
+        "H80",
+        "H67",
+        "H15",
+        "H24",
+        "H1",
+        "H45",
+        "H62",
+        "H19",
+        "H54"
+      ]
+    },
+    {
+      "preference": [
+        "H64",
+        "H66",
+        "H6",
+        "H24",
+        "H25",
+        "H27",
+        "H50",
+        "H31",
+        "H74",
+        "H43",
+        "H69",
+        "H20",
+        "H65",
+        "H2",
+        "H11",
+        "H68",
+        "H37",
+        "H53",
+        "H39",
+        "H46",
+        "H72",
+        "H3",
+        "H32",
+        "H76",
+        "H77",
+        "H28",
+        "H59",
+        "H67",
+        "H48",
+        "H73",
+        "H23",
+        "H49"
+      ]
+    },
+    {
+      "preference": [
+        "H48",
+        "H35",
+        "H38",
+        "H13",
+        "H31",
+        "H79",
+        "H46",
+        "H25",
+        "H21",
+        "H47",
+        "H19",
+        "H50",
+        "H12",
+        "H49",
+        "H45",
+        "H24",
+        "H32",
+        "H27",
+        "H71",
+        "H65",
+        "H58",
+        "H11",
+        "H70",
+        "H61",
+        "H75",
+        "H54",
+        "H26",
+        "H30",
+        "H22",
+        "H10",
+        "H33",
+        "H1",
+        "H72",
+        "H36",
+        "H57",
+        "H68",
+        "H3",
+        "H8",
+        "H39",
+        "H77",
+        "H16",
+        "H67",
+        "H63",
+        "H53",
+        "H51",
+        "H34"
+      ]
+    },
+    {
+      "preference": [
+        "H14",
+        "H79",
+        "H70",
+        "H77",
+        "H19",
+        "H75",
+        "H63",
+        "H48",
+        "H62",
+        "H3",
+        "H21",
+        "H27",
+        "H22",
+        "H54",
+        "H26",
+        "H66",
+        "H24",
+        "H30",
+        "H68",
+        "H64",
+        "H6",
+        "H49"
+      ]
+    },
+    {
+      "preference": [
+        "H43",
+        "H62",
+        "H17",
+        "H23",
+        "H71",
+        "H10",
+        "H14",
+        "H7",
+        "H42",
+        "H50",
+        "H39",
+        "H74",
+        "H80",
+        "H66",
+        "H77",
+        "H31",
+        "H68",
+        "H41",
+        "H48",
+        "H20",
+        "H15",
+        "H30",
+        "H32",
+        "H21",
+        "H64",
+        "H9",
+        "H69",
+        "H56",
+        "H19",
+        "H40",
+        "H6",
+        "H26",
+        "H49",
+        "H67",
+        "H22",
+        "H51",
+        "H72",
+        "H52",
+        "H37",
+        "H18",
+        "H58",
+        "H16",
+        "H34",
+        "H28",
+        "H3"
+      ]
+    },
+    {
+      "preference": [
+        "H14",
+        "H4",
+        "H54",
+        "H44",
+        "H63",
+        "H71",
+        "H79",
+        "H15",
+        "H28",
+        "H29",
+        "H70",
+        "H23",
+        "H58",
+        "H21",
+        "H48",
+        "H16",
+        "H62",
+        "H61",
+        "H38",
+        "H68",
+        "H59",
+        "H30",
+        "H51",
+        "H75",
+        "H50",
+        "H8",
+        "H3",
+        "H18",
+        "H27",
+        "H55",
+        "H80",
+        "H7",
+        "H60",
+        "H52",
+        "H57",
+        "H25"
+      ]
+    },
+    {
+      "preference": [
+        "H37",
+        "H62",
+        "H43",
+        "H10",
+        "H28",
+        "H25",
+        "H69",
+        "H79",
+        "H20",
+        "H51",
+        "H13",
+        "H73",
+        "H32",
+        "H39",
+        "H64",
+        "H2"
+      ]
+    },
+    {
+      "preference": [
+        "H73",
+        "H52",
+        "H24",
+        "H31",
+        "H32",
+        "H28",
+        "H36",
+        "H5",
+        "H64",
+        "H11",
+        "H18",
+        "H3",
+        "H30",
+        "H25",
+        "H43",
+        "H23",
+        "H55",
+        "H26",
+        "H38",
+        "H41",
+        "H56",
+        "H70",
+        "H42",
+        "H76",
+        "H47",
+        "H53",
+        "H19",
+        "H6",
+        "H16",
+        "H49",
+        "H12",
+        "H15",
+        "H1",
+        "H33",
+        "H63",
+        "H14",
+        "H34",
+        "H62",
+        "H44",
+        "H2",
+        "H7",
+        "H46",
+        "H57",
+        "H50"
+      ]
+    },
+    {
+      "preference": [
+        "H56",
+        "H24",
+        "H31",
+        "H49",
+        "H30",
+        "H7",
+        "H33",
+        "H15",
+        "H41",
+        "H20",
+        "H4",
+        "H28",
+        "H52",
+        "H22",
+        "H76",
+        "H55",
+        "H16"
+      ]
+    },
+    {
+      "preference": [
+        "H32",
+        "H10",
+        "H74",
+        "H34",
+        "H42",
+        "H18",
+        "H25",
+        "H58",
+        "H77",
+        "H47",
+        "H45",
+        "H72",
+        "H29",
+        "H41"
+      ]
+    },
+    {
+      "preference": [
+        "H25",
+        "H52",
+        "H43",
+        "H70",
+        "H56",
+        "H4",
+        "H67",
+        "H50",
+        "H58",
+        "H54",
+        "H26",
+        "H16",
+        "H32",
+        "H40",
+        "H51",
+        "H14",
+        "H63",
+        "H47",
+        "H28",
+        "H39",
+        "H44",
+        "H41",
+        "H15",
+        "H13",
+        "H45",
+        "H37",
+        "H20",
+        "H48",
+        "H30",
+        "H29",
+        "H35",
+        "H27",
+        "H65",
+        "H62",
+        "H53",
+        "H61"
+      ]
+    },
+    {
+      "preference": [
+        "H29",
+        "H48",
+        "H66",
+        "H9",
+        "H44",
+        "H70",
+        "H68",
+        "H33",
+        "H73",
+        "H3",
+        "H35",
+        "H49",
+        "H21",
+        "H17",
+        "H36",
+        "H11",
+        "H41",
+        "H63",
+        "H20",
+        "H19",
+        "H15",
+        "H59",
+        "H38",
+        "H23",
+        "H74",
+        "H78",
+        "H30",
+        "H54",
+        "H37",
+        "H64",
+        "H25",
+        "H71",
+        "H24",
+        "H1",
+        "H46",
+        "H8",
+        "H52",
+        "H28",
+        "H60",
+        "H51"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+section,category,avg_max_proposals,datasets
+Market Imbalance,Balanced,30,3
+Market Imbalance,Resident Heavy,12,3
+Market Imbalance,Hospital Heavy,46,3
+Market Imbalance,Section Average,29.3,9
+Preference Density,Sparse,10,3
+Preference Density,Medium,25,3
+Preference Density,Dense,50,3
+Preference Density,Section Average,28.3,9
+Popularity Concentration,Evenly Distributed,30,3
+Popularity Concentration,Concentrated,30,3
+Popularity Concentration,Section Average,30,6

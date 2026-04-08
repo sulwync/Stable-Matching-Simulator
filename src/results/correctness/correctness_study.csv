@@ -1,0 +1,7 @@
+setting,hospitals,residents,instances_tested,valid_matchings,stable_matchings,capacity_violations,invalid_matches,avg_blocking_pairs
+"25 hospitals, 50 residents",25,50,3,3,3,0,0,0
+"50 hospitals, 100 residents",50,100,3,3,3,0,0,0
+"75 hospitals, 150 residents",75,150,3,3,3,0,0,0
+"100 hospitals, 200 residents",100,200,3,3,3,0,0,0
+"125 hospitals, 250 residents",125,250,3,3,3,0,0,0
+"150 hospitals, 300 residents",150,300,3,3,3,0,0,0

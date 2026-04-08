@@ -1,0 +1,709 @@
+{
+  "name": "Generated Manual Dataset",
+  "mode": "manual",
+  "hospitals": [
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 1,
+      "preference": []
+    },
+    {
+      "capacity": 5,
+      "preference": []
+    },
+    {
+      "capacity": 3,
+      "preference": []
+    },
+    {
+      "capacity": 2,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    },
+    {
+      "capacity": 4,
+      "preference": []
+    }
+  ],
+  "residents": [
+    {
+      "preference": [
+        "H19",
+        "H14",
+        "H7",
+        "H13",
+        "H46",
+        "H21"
+      ]
+    },
+    {
+      "preference": [
+        "H36",
+        "H24",
+        "H5",
+        "H17",
+        "H46",
+        "H33"
+      ]
+    },
+    {
+      "preference": [
+        "H33",
+        "H1",
+        "H9",
+        "H34",
+        "H14",
+        "H20",
+        "H44"
+      ]
+    },
+    {
+      "preference": [
+        "H2",
+        "H29",
+        "H21"
+      ]
+    },
+    {
+      "preference": [
+        "H20",
+        "H23",
+        "H1"
+      ]
+    },
+    {
+      "preference": [
+        "H42",
+        "H24",
+        "H18",
+        "H7",
+        "H16",
+        "H2"
+      ]
+    },
+    {
+      "preference": [
+        "H35",
+        "H44",
+        "H48",
+        "H28",
+        "H14",
+        "H31",
+        "H45",
+        "H15",
+        "H3",
+        "H13"
+      ]
+    },
+    {
+      "preference": [
+        "H29",
+        "H5",
+        "H42",
+        "H19",
+        "H26",
+        "H3",
+        "H2",
+        "H1",
+        "H20",
+        "H40"
+      ]
+    },
+    {
+      "preference": [
+        "H17",
+        "H10"
+      ]
+    },
+    {
+      "preference": [
+        "H29",
+        "H1",
+        "H46",
+        "H30"
+      ]
+    },
+    {
+      "preference": [
+        "H2",
+        "H27",
+        "H17",
+        "H15"
+      ]
+    },
+    {
+      "preference": [
+        "H37",
+        "H34",
+        "H39",
+        "H49",
+        "H14",
+        "H9",
+        "H2",
+        "H7",
+        "H29"
+      ]
+    },
+    {
+      "preference": [
+        "H4",
+        "H47",
+        "H41",
+        "H7",
+        "H2",
+        "H45",
+        "H6",
+        "H13",
+        "H34"
+      ]
+    },
+    {
+      "preference": [
+        "H27",
+        "H32",
+        "H3"
+      ]
+    },
+    {
+      "preference": [
+        "H41",
+        "H15",
+        "H33"
+      ]
+    },
+    {
+      "preference": [
+        "H46",
+        "H50",
+        "H12",
+        "H27",
+        "H6"
+      ]
+    },
+    {
+      "preference": [
+        "H44",
+        "H16",
+        "H48",
+        "H46",
+        "H23",
+        "H27",
+        "H11",
+        "H25",
+        "H42"
+      ]
+    },
+    {
+      "preference": [
+        "H2",
+        "H3",
+        "H49",
+        "H34",
+        "H29",
+        "H44",
+        "H48",
+        "H4",
+        "H16",
+        "H32"
+      ]
+    },
+    {
+      "preference": [
+        "H28",
+        "H46",
+        "H44",
+        "H4"
+      ]
+    },
+    {
+      "preference": [
+        "H9",
+        "H25",
+        "H47",
+        "H2"
+      ]
+    },
+    {
+      "preference": [
+        "H38",
+        "H32",
+        "H23",
+        "H31"
+      ]
+    },
+    {
+      "preference": [
+        "H11",
+        "H29",
+        "H10"
+      ]
+    },
+    {
+      "preference": [
+        "H8",
+        "H4",
+        "H34",
+        "H26",
+        "H10",
+        "H38",
+        "H25",
+        "H35"
+      ]
+    },
+    {
+      "preference": [
+        "H3",
+        "H35",
+        "H46",
+        "H26"
+      ]
+    },
+    {
+      "preference": [
+        "H10",
+        "H24",
+        "H21",
+        "H27",
+        "H34",
+        "H38",
+        "H30",
+        "H16",
+        "H29"
+      ]
+    },
+    {
+      "preference": [
+        "H28",
+        "H35",
+        "H23",
+        "H11",
+        "H22",
+        "H27",
+        "H46",
+        "H15",
+        "H47"
+      ]
+    },
+    {
+      "preference": [
+        "H42",
+        "H37",
+        "H26",
+        "H11",
+        "H39",
+        "H49",
+        "H38",
+        "H45"
+      ]
+    },
+    {
+      "preference": [
+        "H7",
+        "H2",
+        "H18",
+        "H40"
+      ]
+    },
+    {
+      "preference": [
+        "H35",
+        "H23",
+        "H45",
+        "H6",
+        "H24",
+        "H48"
+      ]
+    },
+    {
+      "preference": [
+        "H18",
+        "H35",
+        "H34",
+        "H32"
+      ]
+    },
+    {
+      "preference": [
+        "H27",
+        "H13",
+        "H38",
+        "H24",
+        "H1",
+        "H42"
+      ]
+    },
+    {
+      "preference": [
+        "H32",
+        "H21",
+        "H3",
+        "H10",
+        "H24"
+      ]
+    },
+    {
+      "preference": [
+        "H39",
+        "H43",
+        "H35",
+        "H22",
+        "H40",
+        "H34",
+        "H18",
+        "H7",
+        "H33",
+        "H13"
+      ]
+    },
+    {
+      "preference": [
+        "H31",
+        "H41",
+        "H37",
+        "H23",
+        "H22",
+        "H39",
+        "H43"
+      ]
+    },
+    {
+      "preference": [
+        "H32",
+        "H11",
+        "H42",
+        "H35",
+        "H23",
+        "H14",
+        "H28",
+        "H5"
+      ]
+    },
+    {
+      "preference": [
+        "H5",
+        "H46",
+        "H6",
+        "H41",
+        "H37",
+        "H19",
+        "H9",
+        "H10",
+        "H44",
+        "H16"
+      ]
+    },
+    {
+      "preference": [
+        "H50",
+        "H29",
+        "H2",
+        "H20"
+      ]
+    },
+    {
+      "preference": [
+        "H32",
+        "H11"
+      ]
+    },
+    {
+      "preference": [
+        "H43",
+        "H7"
+      ]
+    },
+    {
+      "preference": [
+        "H43",
+        "H47",
+        "H9",
+        "H21",
+        "H10"
+      ]
+    },
+    {
+      "preference": [
+        "H9",
+        "H29",
+        "H2",
+        "H47",
+        "H7",
+        "H24",
+        "H23",
+        "H15"
+      ]
+    },
+    {
+      "preference": [
+        "H30",
+        "H35",
+        "H32",
+        "H6"
+      ]
+    },
+    {
+      "preference": [
+        "H6",
+        "H41",
+        "H11"
+      ]
+    },
+    {
+      "preference": [
+        "H30",
+        "H13",
+        "H25",
+        "H40"
+      ]
+    },
+    {
+      "preference": [
+        "H17",
+        "H47",
+        "H12",
+        "H50",
+        "H16",
+        "H11",
+        "H13"
+      ]
+    },
+    {
+      "preference": [
+        "H33",
+        "H12",
+        "H36",
+        "H50",
+        "H48",
+        "H8",
+        "H26",
+        "H30",
+        "H24"
+      ]
+    },
+    {
+      "preference": [
+        "H10",
+        "H7",
+        "H21",
+        "H14",
+        "H22",
+        "H12",
+        "H13"
+      ]
+    },
+    {
+      "preference": [
+        "H14",
+        "H42",
+        "H29",
+        "H45",
+        "H11",
+        "H50",
+        "H20",
+        "H8",
+        "H28"
+      ]
+    },
+    {
+      "preference": [
+        "H12",
+        "H46",
+        "H42",
+        "H5",
+        "H35",
+        "H26",
+        "H10",
+        "H14",
+        "H13",
+        "H34"
+      ]
+    },
+    {
+      "preference": [
+        "H10",
+        "H14",
+        "H39",
+        "H28",
+        "H8"
+      ]
+    }
+  ]
+}
